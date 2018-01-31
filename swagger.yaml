@@ -1,0 +1,69 @@
+swagger: '2.0'
+info:
+  description: This is an api for agg data requests.
+  version: 1.0.0
+  title: Agg Data API
+schemes:
+  - http
+paths:
+  /submit:
+    post:
+      parameters:
+      - in: "body"
+        name: "data-spec"
+        description: "Defines the data to get."
+        schema:
+          $ref: '#/definitions/data-spec'
+      responses:
+        400:
+          description: "Invalid ID supplied"
+definitions:
+  data-spec:
+    type: object
+    properties:
+      geographic_level:
+        type: string
+        description: Istad Id of geog level.
+      extent:
+        type: array
+        description: >-
+          List of state FIPS (maybe +1) (maybe Gijsoin?) codes to filter on.
+          Block requests only.
+        items:
+          type: string
+      label_header:
+        type: boolean
+        description: >-
+          True to include additional header row. (Code header row always
+          included.)
+      format:
+        type: string
+        enum:
+          - csv
+          - fixed_width
+      value_columns:
+        type: array
+        items:
+          $ref: '#/definitions/value-column'
+  value-column:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        description: Istads id of either agg data var or tst var.
+      year:
+        type: string
+        description: Istads id of year.
+      value-type:
+        type: string
+        description: The file type to get the data from.
+        enum:
+          - estimates
+          - margins
+          - lowerb
+          - upperb
+      breakdown-combo:
+        type: string
+        description: The istads id of the breakdown combo to use.
